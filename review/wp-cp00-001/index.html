@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="appTitle">ACI-OS · Không gian làm việc</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="ACI-OS">
+        <img class="brand-logo" src="assets/Logo NUTE.jpg" alt="Logo NUTE">
+        <span>ACI-OS</span>
+      </a>
+      <div class="topbar-tools">
+        <label class="language-control">
+          <span class="sr-only" data-i18n="languageLabel">Ngôn ngữ</span>
+          <select id="languageSelect" aria-label="Ngôn ngữ" data-i18n-aria="languageLabel">
+            <option value="vi">Tiếng Việt</option>
+            <option value="en">English</option>
+            <option value="zh">中文</option>
+          </select>
+        </label>
+        <time id="clock">--:--:--</time>
+        <div class="account-context">
+          <span id="headerAccount">Khách</span>
+          <strong id="headerRole"></strong>
+          <label id="headerRoleControl" class="header-role-control hidden">
+            <span class="sr-only" data-i18n="switchContext">Chuyển vai trò</span>
+            <select id="headerRoleSelect" aria-label="Chuyển vai trò" data-i18n-aria="switchContext"></select>
+          </label>
+        </div>
+        <button class="button button-secondary hidden" id="logoutButton" type="button" data-i18n="logout">Đăng xuất</button>
+        <button class="button button-primary" id="loginToggle" type="button" data-i18n="login">Đăng nhập</button>
+      </div>
+    </header>
+
+    <aside class="review-banner" role="note">
+      <strong data-i18n="reviewMockLabel">Bản mô phỏng để góp ý</strong>
+      <span data-i18n="threeDNotImplemented">3D chưa triển khai</span>
+    </aside>
+
+    <main>
+      <section id="publicView" class="public-view">
+        <section class="panel public-news">
+          <div class="section-heading">
+            <div><p class="eyebrow" data-i18n="publicLabel">Dành cho mọi người</p><h2 data-i18n="newsTitle">Tin công khai</h2></div>
+          </div>
+          <div id="publicNews" class="news-list"></div>
+          <button class="text-button news-toggle" id="newsToggle" type="button" data-i18n="showMore">Xem thêm</button>
+        </section>
+      </section>
+
+      <dialog id="newsDetailDialog" class="news-dialog" aria-labelledby="newsDetailTitle">
+        <article class="panel news-detail">
+          <button class="close-button" id="closeNewsDetail" type="button" aria-label="Đóng" data-i18n-aria="closeLabel">×</button>
+          <time id="newsDetailDate"></time>
+          <h2 id="newsDetailTitle"></h2>
+          <p id="newsDetailText"></p>
+        </article>
+      </dialog>
+
+      <section id="loginModal" class="login-wrap hidden" aria-labelledby="loginHeading">
+        <div class="panel login-card">
+          <div class="login-brand"><img src="assets/Logo NUTE.jpg" alt="Logo NUTE" data-i18n-alt="logoAlt" class="login-logo"></div>
+          <button class="close-button" id="closeLogin" type="button" aria-label="Đóng" data-i18n-aria="closeLabel">×</button>
+          <h2 id="loginHeading" data-i18n="loginTitle">Đăng nhập tài khoản</h2>
+          <p class="muted" data-i18n="loginIntro">Dùng tài khoản cá nhân để mở không gian làm việc của bạn.</p>
+          <form id="loginForm" class="form-stack">
+            <label><span data-i18n="accountLabel">Tài khoản</span><input id="usernameInput" type="text" autocomplete="username" required></label>
+            <label><span data-i18n="passwordLabel">Mật khẩu</span><input id="passwordInput" type="password" autocomplete="current-password" required></label>
+            <p class="helper" data-i18n="demoAccounts">Tài khoản demo: admin, nguyenvana, thukyB, giaovienE, ketoanG, nguoihocC, phuhuynhD, doanhnghiepF · Mật khẩu: demo</p>
+            <p id="loginError" class="form-error hidden" role="alert"></p>
+            <button class="button button-primary button-wide" type="submit" data-i18n="login">Đăng nhập</button>
+          </form>
+          <p class="friendly-note" data-i18n="demoNotice">Đây là không gian trải nghiệm với thông tin minh họa.</p>
+        </div>
+      </section>
+
+      <section id="appView" class="app-view hidden">
+        <nav class="main-nav" aria-label="Menu chính" data-i18n-aria="menuLabel">
+          <button class="nav-item active" type="button" data-view="dashboard" data-i18n="navDashboard">Tổng quan</button>
+          <button class="nav-item" type="button" data-view="workspace" data-i18n="navWorkspace">Bàn làm việc</button>
+          <button class="nav-item" type="button" data-view="calendar" data-i18n="navCalendar">Lịch</button>
+          <button class="nav-item" type="button" data-view="assistant" data-i18n="navAssistant">HUMA+AI</button>
+          <button class="nav-item hidden" id="functionsNav" type="button" data-view="functions" data-i18n="navFunctions">Chức năng</button>
+          <button class="nav-item hidden" id="adminNav" type="button" data-view="admin" data-i18n="navAdmin">Gán vai trò</button>
+        </nav>
+
+        <section class="view-panel" id="view-dashboard" data-view-panel="dashboard">
+          <div class="dashboard-grid">
+            <article class="panel welcome-panel">
+              <p class="eyebrow" data-i18n="yourWorkspace">Không gian của bạn</p>
+              <h1><span data-i18n="hello">Xin chào</span>, <span id="profileName">—</span></h1>
+              <p class="muted" data-i18n="dashboardIntro">Các nội dung hiển thị theo thông tin minh họa được gán cho tài khoản này.</p>
+              <div class="summary-strip">
+                <div><span data-i18n="openTasks">Nhiệm vụ cần xử lý</span><strong id="taskCount">0</strong></div>
+                <div><span data-i18n="upcomingEvents">Lịch sắp tới</span><strong id="eventCount">0</strong></div>
+              </div>
+            </article>
+            <article class="panel identity-panel">
+              <div class="section-heading"><div><p class="eyebrow" data-i18n="yourContext">Thông tin vai trò</p><h2 data-i18n="activeRole">Vai trò đang dùng</h2></div></div>
+              <p class="primary-line"><span data-i18n="primaryRole">Vai trò chính</span>: <strong id="primaryRole">—</strong></p>
+              <p class="role-list-label" data-i18n="allAssignedRoles">Các vai trò được gán</p>
+              <div id="assignedRoleList" class="role-chips"></div>
+              <p class="scope-line"><span data-i18n="yourScope">Phạm vi minh họa</span>: <strong id="scopeText">—</strong></p>
+            </article>
+          </div>
+          <article class="panel dashboard-work">
+            <div class="section-heading">
+              <div><p class="eyebrow" data-i18n="focusToday">Hôm nay</p><h2 data-i18n="workPreview">Việc cần quan tâm</h2></div>
+              <button class="text-button" type="button" data-go-view="workspace" data-i18n="seeAll">Xem tất cả</button>
+            </div>
+            <div id="dashboardTasks" class="task-cards"></div>
+          </article>
+        </section>
+
+        <section class="view-panel hidden" id="view-workspace" data-view-panel="workspace">
+          <div class="section-heading page-heading"><div><p class="eyebrow" data-i18n="yourWorkspace">Không gian của bạn</p><h1 data-i18n="workTitle">Bàn làm việc</h1></div></div>
+          <article class="panel">
+            <div class="section-heading work-heading">
+              <p class="muted" data-i18n="workIntro">Danh sách việc phù hợp với vai trò và phạm vi đang dùng.</p>
+              <div class="filters" role="group" aria-label="Lọc nhiệm vụ" data-i18n-aria="taskFilterLabel">
+                <button class="filter-button active" type="button" data-filter="all" data-i18n="filterAll">Tất cả</button>
+                <button class="filter-button" type="button" data-filter="open" data-i18n="filterOpen">Cần xử lý</button>
+              </div>
+            </div>
+            <div class="table-wrap"><table class="data-table">
+              <thead><tr><th data-i18n="taskCol">Nhiệm vụ</th><th data-i18n="ownerCol">Phụ trách</th><th data-i18n="dueCol">Thời hạn</th><th data-i18n="statusCol">Trạng thái</th><th data-i18n="actionCol">Chi tiết</th></tr></thead>
+              <tbody id="taskTableBody"></tbody>
+            </table></div>
+            <p id="emptyTasks" class="empty-state hidden" data-i18n="noTasks">Chưa có nhiệm vụ minh họa cho vai trò này.</p>
+          </article>
+        </section>
+
+        <section class="view-panel hidden" id="view-calendar" data-view-panel="calendar">
+          <div class="section-heading page-heading"><div><p class="eyebrow" data-i18n="yourWorkspace">Không gian của bạn</p><h1 data-i18n="calendarTitle">Lịch làm việc</h1></div></div>
+          <div class="calendar-layout">
+            <article class="panel">
+              <div class="section-heading"><div><h2 data-i18n="mySchedule">Lịch của tôi</h2><p class="muted" data-i18n="calendarIntro">Các lịch được chia sẻ trong phạm vi minh họa của bạn.</p></div></div>
+              <div class="table-wrap"><table class="data-table">
+                <thead><tr><th data-i18n="eventCol">Sự kiện</th><th data-i18n="dateCol">Ngày, giờ</th><th data-i18n="locationCol">Địa điểm</th><th data-i18n="personCol">Cá nhân</th><th data-i18n="actionCol">Chi tiết</th></tr></thead>
+                <tbody id="calendarTableBody"></tbody>
+              </table></div>
+              <p id="emptyCalendar" class="empty-state hidden" data-i18n="noEvents">Chưa có lịch trong phạm vi này.</p>
+            </article>
+            <article class="panel calendar-form-panel">
+              <h2 data-i18n="editSchedule">Tạo hoặc sửa lịch</h2>
+              <p class="muted" data-i18n="calendarPermissionNote">Bạn có thể tạo lịch cho mình. Lịch của cá nhân khác chỉ có thể được chỉnh sửa khi được giao trong ví dụ này.</p>
+              <form id="calendarForm" class="form-stack">
+                <input id="eventId" type="hidden">
+                <label><span data-i18n="eventLabel">Nội dung</span><input id="eventTitle" maxlength="100" required></label>
+                <label><span data-i18n="dateTimeLabel">Ngày và giờ</span><input id="eventDate" type="datetime-local" required></label>
+                <label><span data-i18n="locationLabel">Địa điểm</span><input id="eventLocation" maxlength="80" required></label>
+                <label><span data-i18n="calendarFor">Lịch của</span><select id="eventTarget"></select></label>
+                <p id="calendarHint" class="helper"></p>
+                <div class="button-row"><button class="button button-primary" type="submit" data-i18n="saveEvent">Lưu lịch</button><button class="button button-secondary hidden" id="cancelEventEdit" type="button" data-i18n="cancel">Hủy</button></div>
+                <p id="calendarFeedback" class="feedback" aria-live="polite"></p>
+              </form>
+            </article>
+          </div>
+        </section>
+
+        <section class="view-panel hidden" id="view-assistant" data-view-panel="assistant">
+          <div class="section-heading page-heading"><div><p class="eyebrow">HUMA+AI</p><h1 data-i18n="assistantTitle">Cùng suy nghĩ, cùng soạn thảo</h1></div></div>
+          <article class="panel assistant-panel">
+            <p class="muted" data-i18n="assistantIntro">Chọn một cách hỗ trợ để xem gợi ý hoặc bản nháp minh họa.</p>
+            <div class="assistant-actions">
+              <button class="button button-secondary" type="button" data-assistant="analyze" data-i18n="analyze">Phân tích</button>
+              <button class="button button-secondary" type="button" data-assistant="draft" data-i18n="draft">Soạn thảo</button>
+              <button class="button button-secondary" type="button" data-assistant="review" data-i18n="review">Phản biện</button>
+            </div>
+            <div id="assistantResponse" class="assistant-response hidden" aria-live="polite"></div>
+            <p class="friendly-note" data-i18n="assistantNote">Nội dung chỉ là gợi ý tham khảo hoặc bản nháp để bạn tự xem xét.</p>
+          </article>
+        </section>
+
+        <section class="view-panel hidden" id="view-functions" data-view-panel="functions">
+          <div class="section-heading page-heading">
+            <div><p class="eyebrow" data-i18n="functionEyebrow">Không gian minh họa</p><h1 data-i18n="functionsTitle">Chức năng</h1></div>
+          </div>
+          <p class="muted function-intro" data-i18n="functionsIntro">Chỉ các chức năng được gán trực tiếp cho tài khoản này mới xuất hiện.</p>
+          <div id="functionCards" class="function-cards"></div>
+        </section>
+
+        <section class="view-panel hidden" id="view-function-workspace" data-view-panel="function-workspace">
+          <div class="section-heading page-heading function-page-heading">
+            <div><p class="eyebrow" data-i18n="functionEyebrow">Không gian minh họa</p><h1 id="functionWorkspaceTitle">—</h1></div>
+            <button class="button button-secondary" id="backToFunctions" type="button" data-i18n="backToFunctions">Về danh sách chức năng</button>
+          </div>
+          <p id="functionWorkspaceIntro" class="muted function-intro"></p>
+          <article class="panel function-workspace">
+            <div class="function-toolbar">
+              <label class="compact-label"><span data-i18n="functionTypeFilter">Loại nội dung</span><select id="functionTypeFilter"></select></label>
+              <label class="compact-label"><span data-i18n="functionSearchLabel">Tìm trong dữ liệu mẫu</span><input id="functionSearch" type="search" data-i18n-placeholder="functionSearchPlaceholder" placeholder="Tìm theo tên hoặc mã"></label>
+            </div>
+            <div class="function-results">
+              <div class="function-record-list" id="functionRecordList" aria-live="polite"></div>
+              <article class="function-detail panel-soft" id="functionRecordDetail" aria-live="polite"></article>
+            </div>
+          </article>
+        </section>
+
+        <section class="view-panel hidden" id="view-admin" data-view-panel="admin">
+          <div class="section-heading page-heading"><div><p class="eyebrow" data-i18n="accountSettings">Tài khoản</p><h1 data-i18n="assignmentTitle">Vai trò và phạm vi</h1></div></div>
+          <article class="panel admin-panel">
+            <p class="muted" data-i18n="assignmentIntro">Chọn một tài khoản, rồi cập nhật vai trò chính, các vai trò được gán và phạm vi minh họa.</p>
+            <div class="admin-grid">
+              <label><span data-i18n="chooseAccount">Cá nhân</span><select id="accountSelect"></select></label>
+              <label><span data-i18n="primaryRole">Vai trò chính</span><select id="primaryRoleSelect"></select></label>
+            </div>
+            <fieldset><legend data-i18n="assignedRolesLegend">Các vai trò được gán</legend><div id="roleCheckboxes" class="checkbox-grid"></div></fieldset>
+            <fieldset><legend data-i18n="scopeLegend">Phạm vi minh họa</legend><div id="scopeCheckboxes" class="checkbox-grid"></div></fieldset>
+            <fieldset class="function-grants-fieldset">
+              <legend data-i18n="functionGrantLegend">Chức năng và scope được gán riêng</legend>
+              <p class="helper" data-i18n="functionGrantNote">Gán hoặc thu hồi theo từng tài khoản, chức năng và scope. Thay đổi vai trò không làm thay đổi các gán này.</p>
+              <p class="helper" data-i18n="functionRoleNote">Vai trò chỉ là nhãn tài khoản, không tự cấp chức năng.</p>
+              <div id="functionGrantEditor" class="function-grant-editor"></div>
+              <div class="button-row function-grant-actions"><button class="button button-secondary" id="saveFunctionGrants" type="button" data-i18n="saveFunctionGrants">Lưu gán chức năng</button><span id="functionGrantFeedback" class="feedback" aria-live="polite"></span></div>
+            </fieldset>
+            <label class="delegation-option"><input id="delegationToggle" type="checkbox"><span data-i18n="delegationLabel">Mô phỏng phân công tạo và sửa sự kiện lịch cho Hiệu trưởng trong phạm vi Ban giám hiệu</span></label>
+            <p class="helper" data-i18n="delegationNote">Đây chỉ là phân công minh họa, không cấp quyền thực tế; không bao gồm duyệt lịch hoặc quyết định thay người khác.</p>
+            <div class="button-row"><button class="button button-primary" id="saveAssignment" type="button" data-i18n="saveAssignment">Lưu thay đổi</button><span id="assignmentFeedback" class="feedback" aria-live="polite"></span></div>
+          </article>
+          <p class="friendly-note" data-i18n="scopeNotice">Nội dung và phạm vi ở đây chỉ dùng để minh họa trải nghiệm.</p>
+        </section>
+      </section>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
